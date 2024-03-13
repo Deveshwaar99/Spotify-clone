@@ -3,6 +3,7 @@ import ListItem from '@/components/shared/ListItem'
 import { getSongs } from '@/utils/actions/getSongs'
 import PageContent from './_components/PageContent'
 
+export const revalidate = 5
 export default async function Home() {
   const songs = await getSongs()
   return (
