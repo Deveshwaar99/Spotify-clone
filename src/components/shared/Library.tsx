@@ -1,9 +1,27 @@
+'use client'
+import { useUploadModal } from '@/hooks/useUploadModal'
+import useUser from '@/hooks/useUser'
+import { Song } from '@/types/types'
 import { Library as LibraryIcon, Plus } from 'lucide-react'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import MediaItem from './MediaItem'
 
-function Library() {
+type LibraryProps = {
+  songs: Song[] | []
+}
+function Library({ songs }: LibraryProps) {
+  const {
+    userData: { user },
+  } = useUser()
+
+  const uploadModal = useUploadModal()
+  const router = useRouter()
   function onClick() {
-    //handle upload
+    if (!user) {
+      return router.push('/auth/login')
+    }
+    //TODO:CHECK FOR SUBSCRIPTION
+    uploadModal.onOpen()
   }
   return (
     <div className="flex flex-col">
@@ -18,7 +36,11 @@ function Library() {
           className="cursor-pointer text-neutral-400 transition hover:text-white"
         />
       </div>
-      <div className="mt-4 flex flex-col gap-y-2 px-3">List of Songs!</div>
+      <div className="mt-4 flex flex-col gap-y-2 px-3">
+        {songs.map(item => (
+          <MediaItem key={item.id} onClick={() => {}} data={item} />
+        ))}
+      </div>
     </div>
   )
 }

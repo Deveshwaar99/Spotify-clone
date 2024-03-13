@@ -1,9 +1,13 @@
 'use client'
 
-import { ChevronLeft, ChevronRight, Home, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Home, Search, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 import Button from './Button'
+import toast from 'react-hot-toast'
+
+import useUser from '@/hooks/useUser'
+import { useClient } from '@/providers/SupabaseProvider'
 
 type HeaderProps = {
   children: React.ReactNode
@@ -11,9 +15,24 @@ type HeaderProps = {
 }
 
 const Header = ({ children, className }: HeaderProps) => {
+  const {
+    userData: { user },
+    setStatusChange,
+  } = useUser()
   const router = useRouter()
-  const handleLogout = () => {
-    //Logout fun
+
+  const supabase = useClient()
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (!error) {
+      toast.success('Logout success')
+      setStatusChange(prev => !prev)
+      router.refresh()
+    } else {
+      toast.error('Uh oh! Something went wrong.')
+    }
   }
 
   return (
@@ -37,29 +56,38 @@ const Header = ({ children, className }: HeaderProps) => {
         {/* Mobile screen */}
         <div className="flex items-center gap-x-2 md:hidden">
           <button
-            onClick={router.back}
+            onClick={() => router.push('/')}
             className="flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75"
           >
             <Home size={20} className="text-black" />
           </button>
           <button
-            onClick={router.back}
+            onClick={() => router.push('/search')}
             className="flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75"
           >
             <Search size={20} className="text-black" />
           </button>
         </div>
-        <div className="flex gap-x-4">
-          <div>
-            <Button onClick={() => {}} className="bg-transparent font-medium text-neutral-300">
-              Sign up
-            </Button>
-          </div>
-          <div>
-            <Button onClick={() => {}} className="bg-white px-6 py-2">
-              Log in
-            </Button>
-          </div>
+        <div className="flex items-center gap-x-4 text-black">
+          {user !== null ? (
+            <>
+              <Button onClick={handleLogout} className="bg-white px-6 py-2">
+                Logout
+              </Button>
+              <Button onClick={() => router.push('/account')} className="rounded-full bg-white p-2">
+                <User />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button className="text-nowrap bg-transparent font-medium text-neutral-300">
+                Sign up
+              </Button>
+              <Button onClick={() => router.push('/auth/login')} className="bg-white px-6 py-2">
+                Login
+              </Button>
+            </>
+          )}
         </div>
       </div>
       {children}
