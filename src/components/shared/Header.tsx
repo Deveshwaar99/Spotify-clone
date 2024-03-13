@@ -33,6 +33,7 @@ const Header = ({ children, className }: HeaderProps) => {
     } else {
       toast.error('Uh oh! Something went wrong.')
     }
+    router.refresh()
   }
 
   return (
