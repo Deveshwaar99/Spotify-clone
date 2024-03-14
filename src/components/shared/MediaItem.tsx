@@ -1,3 +1,4 @@
+import { useLoadImageUrl } from '@/hooks/useLoadImageUrl'
 import { Song } from '@/types/types'
 import Image from 'next/image'
 
@@ -6,6 +7,7 @@ type MediaItemProps = {
   data: Song
 }
 function MediaItem({ onClick, data }: MediaItemProps) {
+  const imagePath = useLoadImageUrl(data)
   return (
     <div
       onClick={onClick}
@@ -14,7 +16,7 @@ function MediaItem({ onClick, data }: MediaItemProps) {
       <div className="overflow-hidden rounded-md bg-orange-300">
         <Image
           className="object-cover"
-          src={'/images/jailer.jpg'}
+          src={imagePath || '/images/jailer.jpg'}
           width={32}
           height={28}
           alt="Image"
