@@ -12,9 +12,10 @@ type UserData =
 
 export default function useUser() {
   const [userData, setUserData] = useState<UserData>({ user: null })
-  const [error, setError] = useState(null)
-  const [statusChange, setStatusChange] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
   const supabaseRef = useRef(useClient())
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -22,11 +23,13 @@ export default function useUser() {
         setUserData(data)
       } catch (err: any) {
         console.error('Error in fetching user data---', err)
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchUser()
-  }, [statusChange])
+  }, [])
 
-  return { userData, setStatusChange }
+  return { user: userData.user, isLoading }
 }
