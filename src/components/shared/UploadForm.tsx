@@ -45,9 +45,7 @@ export function UploadForm() {
   const uploadModal = useUploadModal()
   const supabaseClient = useClient()
 
-  const {
-    userData: { user },
-  } = useUser()
+  const { user } = useUser()
 
   const router = useRouter()
 

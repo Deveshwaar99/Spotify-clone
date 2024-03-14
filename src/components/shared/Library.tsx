@@ -10,14 +10,12 @@ type LibraryProps = {
   songs: Song[] | []
 }
 function Library({ songs }: LibraryProps) {
-  const {
-    userData: { user },
-  } = useUser()
+  const { user, isLoading } = useUser()
 
   const uploadModal = useUploadModal()
   const router = useRouter()
   function onClick() {
-    if (!user) {
+    if (!user && !isLoading) {
       return router.push('/auth/login')
     }
     //TODO:CHECK FOR SUBSCRIPTION

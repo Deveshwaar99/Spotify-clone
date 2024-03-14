@@ -16,9 +16,7 @@ const AuthModal = () => {
   const router = useRouter()
 
   const supabase = useClient()
-  const {
-    userData: { user },
-  } = useUser()
+  const { user, isLoading } = useUser()
 
   useEffect(() => {
     if (user) {

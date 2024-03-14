@@ -15,10 +15,8 @@ type HeaderProps = {
 }
 
 const Header = ({ children, className }: HeaderProps) => {
-  const {
-    userData: { user },
-    setStatusChange,
-  } = useUser()
+  const { user, isLoading } = useUser()
+
   const router = useRouter()
 
   const supabase = useClient()
@@ -28,7 +26,6 @@ const Header = ({ children, className }: HeaderProps) => {
 
     if (!error) {
       toast.success('Logout success')
-      setStatusChange(prev => !prev)
       router.refresh()
     } else {
       toast.error('Uh oh! Something went wrong.')
@@ -72,19 +69,30 @@ const Header = ({ children, className }: HeaderProps) => {
         <div className="flex items-center gap-x-4 text-black">
           {user !== null ? (
             <>
-              <Button onClick={handleLogout} className="bg-white px-6 py-2">
+              <Button onClick={handleLogout} disabled={isLoading} className="bg-white px-6 py-2">
                 Logout
               </Button>
-              <Button onClick={() => router.push('/account')} className="rounded-full bg-white p-2">
+              <Button
+                onClick={() => router.push('/account')}
+                disabled={isLoading}
+                className="rounded-full bg-white p-2"
+              >
                 <User />
               </Button>
             </>
           ) : (
             <>
-              <Button className="text-nowrap bg-transparent font-medium text-neutral-300">
+              <Button
+                disabled={isLoading}
+                className="text-nowrap bg-transparent font-medium text-neutral-300"
+              >
                 Sign up
               </Button>
-              <Button onClick={() => router.push('/auth/login')} className="bg-white px-6 py-2">
+              <Button
+                onClick={() => router.push('/auth/login')}
+                disabled={isLoading}
+                className="bg-white px-6 py-2"
+              >
                 Login
               </Button>
             </>

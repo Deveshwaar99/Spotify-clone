@@ -13,9 +13,7 @@ type LikeButtonProps = {
 
 export default function LikeButton({ songId }: LikeButtonProps) {
   const router = useRouter()
-  const {
-    userData: { user },
-  } = useUser()
+  const { user, isLoading } = useUser()
   const supabaseClient = useClient()
   const [isLiked, setIsLiked] = useState(false)
 
