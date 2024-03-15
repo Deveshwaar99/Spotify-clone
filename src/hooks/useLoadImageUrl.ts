@@ -1,11 +1,20 @@
-import { useClient } from '@/providers/SupabaseProvider'
 import { Song } from '@/types/types'
+import { getImageUrl } from '@/utils/actions/getImageUrl'
+import { useEffect, useMemo, useState } from 'react'
 
 export function useLoadImageUrl(song: Song) {
-  const supabaseClient = useClient()
-  if (!song) return
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const { data } = supabaseClient.storage.from('images').getPublicUrl(song.image_path)
+  useEffect(() => {
+    setIsLoading(true)
+    async function fetchImageUrl() {
+      const url = await getImageUrl(song)
+      setImageUrl(url)
+      setIsLoading(false)
+    }
+    fetchImageUrl()
+  }, [song])
 
-  return data.publicUrl
+  return useMemo(() => ({ imageUrl, isLoading }), [isLoading, imageUrl])
 }
