@@ -7,6 +7,7 @@ export function useLoadImageUrl(song: Song) {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    if (!song) return
     setIsLoading(true)
     async function fetchImageUrl() {
       const url = await getImageUrl(song)
