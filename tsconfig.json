@@ -18,7 +18,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "use-sound": ["./generated-types/"]
     }
   },
   "include": [
@@ -28,7 +29,8 @@
     ".next/types/**/*.ts",
     "tailwind.config.ts",
     "src/testfile.mjs",
-    "drizzle.config.mjs"
+    "drizzle.config.mjs",
+    "generated-types"
   ],
   "exclude": ["node_modules"]
 }
