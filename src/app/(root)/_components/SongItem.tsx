@@ -9,7 +9,8 @@ type SongItemProps = {
   onClick: (id: string) => void
 }
 function SongItem({ data, onClick }: SongItemProps) {
-  let imagePath = useLoadImageUrl(data)
+  const { imageUrl: imagePath } = useLoadImageUrl(data)
+
   return (
     <>
       <div
