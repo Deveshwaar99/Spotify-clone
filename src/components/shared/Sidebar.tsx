@@ -8,6 +8,8 @@ import { Home, Search } from 'lucide-react'
 import Box from './Box'
 import Library from './Library'
 import SidebarItem from './SidebarItem'
+import usePlayer from '@/hooks/usePlayer'
+import { twMerge } from 'tailwind-merge'
 
 type SidebarProps = {
   children: React.ReactNode
@@ -16,6 +18,7 @@ type SidebarProps = {
 
 function Sidebar({ children, songs }: SidebarProps) {
   const pathName = usePathname()
+  const player = usePlayer()
   const routes = useMemo(
     () => [
       {
@@ -34,7 +37,7 @@ function Sidebar({ children, songs }: SidebarProps) {
     [pathName]
   )
   return (
-    <div className="flex h-screen">
+    <div className={twMerge('flex h-full', player.activeId && 'h-[calc(100%-80px)]')}>
       <div className="hidden h-full w-[300px] flex-col gap-2 bg-black p-2 md:flex">
         <Box>
           <div className="flex flex-col gap-y-4 px-5 py-4">

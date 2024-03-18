@@ -3,14 +3,17 @@ import { Song } from '@/types/types'
 import Image from 'next/image'
 
 type MediaItemProps = {
-  onClick: () => void
+  onClick: (id: string) => void
   data: Song
 }
 function MediaItem({ onClick, data }: MediaItemProps) {
-  const imagePath = useLoadImageUrl(data)
+  const { imageUrl: imagePath } = useLoadImageUrl(data)
+
   return (
     <div
-      onClick={onClick}
+      onClick={() => {
+        onClick(data.id)
+      }}
       className="flex w-full cursor-pointer items-center gap-x-3 rounded-md p-2 hover:bg-neutral-800/50"
     >
       <div className="overflow-hidden rounded-md bg-orange-300">

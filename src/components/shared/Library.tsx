@@ -5,12 +5,15 @@ import { Song } from '@/types/types'
 import { Library as LibraryIcon, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import MediaItem from './MediaItem'
+import useOnPlay from '@/hooks/useOnPlay'
 
 type LibraryProps = {
   songs: Song[] | []
 }
 function Library({ songs }: LibraryProps) {
   const { user, isLoading } = useUser()
+
+  const { onPlay } = useOnPlay(songs)
 
   const uploadModal = useUploadModal()
   const router = useRouter()
@@ -36,7 +39,7 @@ function Library({ songs }: LibraryProps) {
       </div>
       <div className="mt-4 flex flex-col gap-y-2 px-3">
         {songs.map(item => (
-          <MediaItem key={item.id} onClick={() => {}} data={item} />
+          <MediaItem key={item.id} onClick={(id: string) => onPlay(id)} data={item} />
         ))}
       </div>
     </div>
