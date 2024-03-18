@@ -15,7 +15,7 @@ export default async function RoutesLayout({
 }>) {
   const songs = await getSongsByUser()
   return (
-    <div className="m-0">
+    <div className="m-0 h-full">
       <SupabaseProvider>
         <ModalProvider />
         <Sidebar songs={songs}>{children}</Sidebar>
