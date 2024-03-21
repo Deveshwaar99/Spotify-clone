@@ -11,7 +11,7 @@ type LibraryProps = {
   songs: Song[] | []
 }
 function Library({ songs }: LibraryProps) {
-  const { user, isLoading } = useUser()
+  const { user, isLoading, subscription } = useUser()
 
   const { onPlay } = useOnPlay(songs)
 
@@ -21,7 +21,7 @@ function Library({ songs }: LibraryProps) {
     if (!user && !isLoading) {
       return router.push('/auth/login')
     }
-    //TODO:CHECK FOR SUBSCRIPTION
+    if (!subscription) return router.push('/premium')
     uploadModal.onOpen()
   }
   return (
