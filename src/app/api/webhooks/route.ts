@@ -32,14 +32,11 @@ export async function POST(request: Request) {
     if (!sig || !webhookSecret) return
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
   } catch (err: any) {
-    console.log(`❌ There is an error`, err)
+    console.error(`❌ There is an error`, err)
     return new NextResponse(`Webhook Error:${err.message}`, { status: 400 })
   }
 
   if (relevantEvents.has(event.type)) {
-    console.log(
-      'matched event------------------------------------------------------------------------------------------------------------'
-    )
     try {
       switch (event.type) {
         case 'product.created':
@@ -75,7 +72,6 @@ export async function POST(request: Request) {
           throw new Error('Unhandled relevant event!')
       }
     } catch (error) {
-      // console.log(error)
       return new NextResponse('Webhook error: "Webhook handler failed. View logs."', {
         status: 400,
       })

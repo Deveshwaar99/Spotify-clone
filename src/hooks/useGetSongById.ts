@@ -26,7 +26,6 @@ function useGetSongById(id?: string) {
     fetchSongById()
   }, [id, supabaseClient])
 
-  // console.log('inside get songBy id------' + { song, isLoading })
   return useMemo(
     () => ({
       song,

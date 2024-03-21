@@ -23,7 +23,7 @@ const upsertProductRecord = async (product: Stripe.Product) => {
 
   const { error } = await supabaseAdmin.from('products').upsert([productData])
   if (error) throw error
-  console.log(`Product inserted/updated: ${product.id}`)
+  console.info(`Product inserted/updated: ${product.id}`)
 }
 
 //add a price
@@ -44,7 +44,7 @@ const upsertPriceRecord = async (price: Stripe.Price) => {
 
   const { error } = await supabaseAdmin.from('prices').upsert([priceData])
   if (error) throw error
-  console.log(`Price inserted/updated: ${price.id}`)
+  console.info(`Price inserted/updated: ${price.id}`)
 }
 
 //
@@ -70,7 +70,7 @@ const createOrRetrieveCustomer = async ({ email, uuid }: { email: string; uuid: 
       .from('customers')
       .insert([{ id: uuid, stripe_customer_id: customer.id }])
     if (supabaseError) throw supabaseError
-    console.log(`New customer created and inserted for ${uuid}.`)
+    console.info(`New customer created and inserted for ${uuid}.`)
     return customer.id
   }
   return data.stripe_customer_id
@@ -140,7 +140,7 @@ const manageSubscriptionStatusChange = async (
 
   const { error } = await supabaseAdmin.from('subscriptions').upsert([subscriptionData])
   if (error) throw error
-  console.log(`Inserted/updated subscription [${subscription.id}] for user [${uuid}]`)
+  console.info(`Inserted/updated subscription [${subscription.id}] for user [${uuid}]`)
 
   // For a new subscription copy the billing details to the customer object.
   // NOTE: This is a costly operation and should happen at the very end.

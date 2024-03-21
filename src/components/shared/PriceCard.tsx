@@ -18,7 +18,6 @@ type PriceCardProps = {
 }
 function PriceCard({ title, price_value, currency, price, subscription }: PriceCardProps) {
   const { user, isLoading } = useUser()
-  // console.log(subscription)
   const [disabled, setDisabled] = useState(!title || !price_value || !currency)
 
   const router = useRouter()
