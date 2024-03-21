@@ -52,11 +52,12 @@ export function SignUser({ type }: SignUserProps) {
           email,
           password,
         })
-        if (data) {
-          router.push('/')
-        }
         if (error) {
           setError(error?.message)
+        }
+
+        if (data) {
+          router.push('/')
         }
       } catch (error: any) {
         setError(error?.message)

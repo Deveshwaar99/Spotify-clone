@@ -42,7 +42,7 @@ export default function useUser() {
     }
 
     fetchUser()
-  }, [])
+  }, [userData])
 
   return { user: userData.user, subscription, isLoading }
 }

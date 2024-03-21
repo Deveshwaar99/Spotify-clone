@@ -22,15 +22,20 @@ const Header = ({ children, className }: HeaderProps) => {
   const supabase = useClient()
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
+    try {
+      const { error } = await supabase.auth.signOut()
 
-    if (!error) {
-      toast.success('Logout success')
-      router.refresh()
-    } else {
+      if (error) {
+        toast.error('Uh oh! Something went wrong.')
+      } else {
+        toast.success('Logout success')
+        // Refresh the route after successful logout
+        router.refresh()
+      }
+    } catch (error) {
       toast.error('Uh oh! Something went wrong.')
+      console.error('Error while logging out:', error)
     }
-    router.refresh()
   }
 
   return (
@@ -83,6 +88,7 @@ const Header = ({ children, className }: HeaderProps) => {
           ) : (
             <>
               <Button
+                onClick={() => router.push('/auth/login')}
                 disabled={isLoading}
                 className="text-nowrap bg-transparent font-medium text-neutral-300"
               >
