@@ -19,7 +19,7 @@ function MediaItem({ onClick, data }: MediaItemProps) {
       <div className="overflow-hidden rounded-md bg-orange-300">
         <Image
           className="object-cover"
-          src={imagePath || '/images/jailer.jpg'}
+          src={imagePath || '/images/placeholder.png'}
           width={32}
           height={28}
           alt="Image"
