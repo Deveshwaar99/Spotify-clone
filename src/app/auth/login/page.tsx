@@ -32,7 +32,13 @@ function Login() {
         supabaseClient={supabaseClient}
         providers={['github']}
         magicLink={true}
-        redirectTo={redirectUrl}
+        localization={{
+          variables: {
+            sign_up: {
+              confirmation_text: 'Click in the link in your email and login again',
+            },
+          },
+        }}
         appearance={{
           theme: ThemeSupa,
           variables: {
