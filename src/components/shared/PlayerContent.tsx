@@ -107,9 +107,9 @@ function PlayerContent({ song, songUrl }: PlayerContentProps) {
   }, [sound])
 
   return (
-    <div className="grid h-full grid-cols-3">
+    <div className="grid h-full grid-cols-2 md:grid-cols-3">
       <div className="flex w-full justify-start">
-        <div className="flex items-center gap-x-12">
+        <div className="flex items-center gap-x-4">
           <MediaItem data={song} onClick={() => {}} />
           <LikeButton songId={song.id} />
         </div>
@@ -147,10 +147,11 @@ function PlayerContent({ song, songUrl }: PlayerContentProps) {
           currentDuration={currentDuration}
           duration={duration || 0}
           onProgressChange={onProgressChange}
+          className="hidden md:block"
         />
       </div>
 
-      <div className="flex w-full items-center justify-end">
+      <div className="hidden w-full items-center justify-end md:flex">
         <div className="flex w-[120px] items-center gap-x-2">
           <VolumeIcon onClick={toggleVolume} size={34} className="cursor-pointer" />
           <Slider
