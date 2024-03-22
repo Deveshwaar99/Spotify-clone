@@ -1,5 +1,6 @@
 import React from 'react'
 import { Slider } from '../ui/slider'
+import { twMerge } from 'tailwind-merge'
 
 type ProgressBarProps = {
   formattedCurrentDuration: string
@@ -7,6 +8,7 @@ type ProgressBarProps = {
   duration: number
   currentDuration: number
   onProgressChange: (newDuration: number) => void
+  className?: string
 }
 function ProgressBar({
   formattedCurrentDuration,
@@ -14,10 +16,16 @@ function ProgressBar({
   duration,
   currentDuration,
   onProgressChange,
+  className,
 }: ProgressBarProps) {
   return (
     <>
-      <div className="flex w-[313px] items-center justify-center gap-x-3 md:w-[608px]">
+      <div
+        className={twMerge(
+          'flex w-[313px] items-center justify-center gap-x-3 md:w-[608px]',
+          className
+        )}
+      >
         <p className="text-xs text-neutral-400">{formattedCurrentDuration}</p>
         <Slider
           max={Math.floor(duration || 0) / 1000}
