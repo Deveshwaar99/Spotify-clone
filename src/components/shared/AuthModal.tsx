@@ -15,15 +15,13 @@ const AuthModal = () => {
   const { onClose, isOpen } = useAuthModal()
   const router = useRouter()
 
-  const supabase = useClient()
+  const supabaseClient = useClient()
   const { user, isLoading } = useUser()
-
   useEffect(() => {
     if (user) {
-      router.refresh()
       onClose()
     }
-  }, [router, onClose, user])
+  }, [onClose, user])
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -39,9 +37,16 @@ const AuthModal = () => {
       onChange={onChange}
     >
       <Auth
-        supabaseClient={supabase}
+        supabaseClient={supabaseClient}
         providers={['github']}
         magicLink={true}
+        localization={{
+          variables: {
+            sign_up: {
+              confirmation_text: 'Click in the link in your email and login again',
+            },
+          },
+        }}
         appearance={{
           theme: ThemeSupa,
           variables: {
@@ -54,7 +59,6 @@ const AuthModal = () => {
           },
         }}
         theme="dark"
-        redirectTo="/"
       />
     </Modal>
   )
