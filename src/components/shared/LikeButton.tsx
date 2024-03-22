@@ -42,6 +42,7 @@ export default function LikeButton({ songId }: LikeButtonProps) {
       router.push('/login')
       return
     }
+    setIsLiked(prevIsLiked => !prevIsLiked)
     if (isLiked) {
       const { error } = await supabaseClient
         .from('liked_songs')
@@ -50,9 +51,8 @@ export default function LikeButton({ songId }: LikeButtonProps) {
         .eq('song_id', songId)
 
       if (error) {
-        // toast.error(error.message)
-      } else {
-        setIsLiked(false)
+        setIsLiked(prevIsLiked => !prevIsLiked)
+        toast.error(error.message)
       }
     } else {
       const { error } = await supabaseClient.from('liked_songs').insert({
@@ -61,14 +61,14 @@ export default function LikeButton({ songId }: LikeButtonProps) {
       })
 
       if (error) {
+        setIsLiked(prevIsLiked => !prevIsLiked)
         toast.error(error.message)
       } else {
-        setIsLiked(true)
         toast.success('Success')
       }
     }
 
-    router.refresh()
+    // router.refresh()
   }
 
   return (
