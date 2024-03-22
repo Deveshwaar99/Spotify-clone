@@ -147,7 +147,7 @@ function PlayerContent({ song, songUrl }: PlayerContentProps) {
           currentDuration={currentDuration}
           duration={duration || 0}
           onProgressChange={onProgressChange}
-          className="hidden md:block"
+          className="hidden md:flex"
         />
       </div>
 
