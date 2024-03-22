@@ -4,8 +4,6 @@ import UploadModal from '@/components/shared/UploadModal'
 import React, { useState } from 'react'
 
 const ModalProvider = () => {
-  const [isMounted, setIsMounted] = useState(false)
-
   return (
     <>
       <AuthModal />
