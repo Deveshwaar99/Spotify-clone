@@ -10,7 +10,7 @@ function useOnPlay(songs: Song[]) {
   const router = useRouter()
 
   function onPlay(id: string) {
-    if (!user) router.push('/auth/login')
+    if (!user) return router.push('/auth/login')
     player.setIds(songs.map(item => item.id))
     player.setId(id)
   }
