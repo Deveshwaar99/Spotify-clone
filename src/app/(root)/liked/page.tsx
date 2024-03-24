@@ -6,7 +6,7 @@ import LikedContent from './_components/LikedContent'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
-export const revalidate = 5
+export const revalidate = 120
 async function LikedPage() {
   const supabaseClient = createClient()
   const { data } = await supabaseClient.auth.getUser()

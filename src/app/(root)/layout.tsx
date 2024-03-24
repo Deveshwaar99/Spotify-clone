@@ -6,7 +6,7 @@ import SupabaseProvider from '@/providers/SupabaseProvider'
 import { getSongsByUser } from '@/utils/actions/getSongsByUser'
 import Player from '@/components/shared/Player'
 
-export const revalidatePath = 20
+export const revalidatePath = 120
 
 export default async function RoutesLayout({
   children,
