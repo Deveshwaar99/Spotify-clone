@@ -3,9 +3,9 @@
 import useGetSongById from '@/hooks/useGetSongById'
 import useLoadSongUrl from '@/hooks/useLoadSongUrl'
 import usePlayer from '@/hooks/usePlayer'
-import PlayerContent from './PlayerContent'
 import { useMemo } from 'react'
-import { BounceLoader, RiseLoader, ScaleLoader } from 'react-spinners'
+import { ScaleLoader } from 'react-spinners'
+import PlayerContent from './PlayerContent'
 
 function Player() {
   const player = usePlayer()
