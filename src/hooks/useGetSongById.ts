@@ -5,11 +5,13 @@ import toast from 'react-hot-toast'
 
 function useGetSongById(id?: string) {
   const [song, setSong] = useState<Song | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const supabaseClient = useClient()
 
   useEffect(() => {
     if (!id) return
+
+    setIsLoading(true)
 
     async function fetchSongById() {
       const { data, error } = await supabaseClient.from('songs').select('*').eq('id', id).single()
