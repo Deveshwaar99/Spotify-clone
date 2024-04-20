@@ -2,9 +2,9 @@
 
 import { ChevronLeft, ChevronRight, Home, Search, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 import { twMerge } from 'tailwind-merge'
 import Button from './Button'
-import toast from 'react-hot-toast'
 
 import useUser from '@/hooks/useUser'
 import { useClient } from '@/providers/SupabaseProvider'
@@ -30,7 +30,7 @@ const Header = ({ children, className }: HeaderProps) => {
       } else {
         toast.success('Logout success')
         // Refresh the route after successful logout
-        router.refresh()
+        window.location.reload()
       }
     } catch (error) {
       toast.error('Uh oh! Something went wrong.')
