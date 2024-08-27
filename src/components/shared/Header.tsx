@@ -44,12 +44,14 @@ const Header = ({ children, className }: HeaderProps) => {
         {/* Medium screen */}
         <div className="hidden items-center gap-x-2 md:flex">
           <button
+            type="button"
             onClick={router.back}
             className="flex items-center justify-center rounded-full bg-black transition hover:opacity-75"
           >
             <ChevronLeft size={35} className="text-white" />
           </button>
           <button
+            type="button"
             onClick={router.forward}
             className="flex items-center justify-center rounded-full bg-black transition hover:opacity-75"
           >
@@ -59,12 +61,14 @@ const Header = ({ children, className }: HeaderProps) => {
         {/* Mobile screen */}
         <div className="flex items-center gap-x-2 md:hidden">
           <button
+            type="button"
             onClick={() => router.push('/')}
             className="flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75"
           >
             <Home size={20} className="text-black" />
           </button>
           <button
+            type="button"
             onClick={() => router.push('/search')}
             className="flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75"
           >
