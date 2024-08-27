@@ -5,8 +5,18 @@ import { createOrRetrieveCustomer } from '@/lib/stripe/stripe_Supabase_Subscript
 import { createClient } from '@/utils/supabase/server'
 import { NextResponse } from 'next/server'
 
+import { z } from 'zod'
+
+const RequestBodySchema = z.object({
+  priceId: z.string(),
+  quantity: z.number().int().positive().default(1),
+  metadata: z.record(z.unknown()).default({}),
+})
+
 export async function POST(req: Request) {
-  const { price, quantity = 1, metadata = {} } = await req.json()
+  const body = await req.json()
+
+  const { priceId, quantity, metadata } = RequestBodySchema.parse(body)
 
   try {
     const supabaseClient = createClient()
@@ -28,7 +38,7 @@ export async function POST(req: Request) {
       customer,
       line_items: [
         {
-          price: price.id,
+          price: priceId,
           quantity,
         },
       ],
