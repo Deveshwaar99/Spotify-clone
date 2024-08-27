@@ -1,48 +1,43 @@
 import { useClient } from '@/providers/SupabaseProvider'
-import { Subscription } from '@/types/types'
-import { User } from '@supabase/auth-helpers-nextjs'
-import { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
-type UserData =
-  | {
-      user: User
-    }
-  | {
-      user: null
-    }
+import type { UserResponse } from '@supabase/supabase-js'
+import type { Subscription } from '@/types/types'
 
 export default function useUser() {
-  const [userData, setUserData] = useState<UserData>({ user: null })
-  const [subscription, setSubscription] = useState<Subscription | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const supabase = useClient()
 
-  const supabaseRef = useRef(useClient())
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { data } = await supabaseRef.current.auth.getUser()
-        setUserData(data)
-        if (data.user && data.user.id) {
-          const getSubscription = (userId: string) =>
-            supabaseRef.current
-              .from('subscriptions')
-              .select('*, prices(*, products(*))')
-              .eq('user_id', userId)
-              .in('status', ['trialing', 'active'])
-              .single()
-          const { data: subscriptionData } = await getSubscription(data.user?.id)
-          setSubscription(subscriptionData)
-        }
-      } catch (err: any) {
-        console.error('Error in fetching user data---', err)
-      } finally {
-        setIsLoading(false)
-      }
+  const getUser = async (): Promise<UserResponse> => await supabase.auth.getUser()
+  const getSubscription = async (userId: string) => {
+    return await supabase
+      .from('subscriptions')
+      .select('*, prices(*, products(*))')
+      .eq('user_id', userId)
+      .in('status', ['trialing', 'active'])
+      .single()
+  }
+  const getUserDetails = async () => {
+    const { data, error } = await getUser()
+    if (error) {
+      return { user: null, subscription: null }
     }
+    const { user } = data
+    const subscription = await getSubscription(user.id)
+    if (subscription.error || !subscription.data) return { user, subscription: null }
+    console.log('subscription is ', subscription.data)
+    return { user, subscription: subscription.data as Subscription }
+  }
 
-    fetchUser()
-  }, [userData])
+  const { data, error, isFetching, status, isError } = useQuery({
+    queryKey: ['userDetails'],
+    queryFn: getUserDetails,
+  })
 
-  return { user: userData.user, subscription, isLoading }
+  return {
+    data,
+    error,
+    isFetching,
+    status,
+    isError,
+  }
 }
