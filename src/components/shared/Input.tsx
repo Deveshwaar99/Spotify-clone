@@ -1,5 +1,6 @@
 'use client'
-import React, { forwardRef } from 'react'
+import type React from 'react'
+import { forwardRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
