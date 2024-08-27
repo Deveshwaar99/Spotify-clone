@@ -7,7 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { Price, Subscription } from '@/types/types'
+import type { Price, Subscription } from '@/types/types'
 import getActiveProductsWithPrices from '@/utils/actions/getActiveProductsWithPrices'
 import { createClient } from '@/utils/supabase/server'
 
@@ -39,10 +39,10 @@ async function PremiumPage() {
               return (
                 <CarouselItem key={product.id}>
                   <PriceCard
-                    title={(product?.metadata && product.metadata.type) || ''}
+                    title={product?.metadata?.type || ''}
                     price_value={(product?.prices && formatPrice(product.prices[0])) || ''}
-                    currency={(product?.prices && product.prices[0].currency) || ''}
-                    price={product?.prices && product.prices[0]}
+                    currency={product?.prices?.[0].currency || ''}
+                    price={product?.prices?.[0]}
                     subscription={subscription}
                   />
                 </CarouselItem>
