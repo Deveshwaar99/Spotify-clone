@@ -1,8 +1,8 @@
-import { Price, Product } from '@/types/types'
+import type { Price, Product } from '@/types/types'
 
-import Stripe from 'stripe'
+import type Stripe from 'stripe'
 import { stripe } from './stripe'
-import { Database } from '@/types/supabase'
+import type { Database } from '@/types/supabase'
 import { toDateTime } from '../helpers'
 import { createClient } from '@supabase/supabase-js'
 
