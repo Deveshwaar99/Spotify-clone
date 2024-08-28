@@ -15,13 +15,19 @@ type PriceCardProps = {
   price_value: string
   currency: string
   subscription: Subscription | null
+  alreadySubscribed: boolean
 }
-function PriceCard({ title, price_value, currency, price, subscription }: PriceCardProps) {
+function PriceCard({
+  title,
+  price_value,
+  currency,
+  price,
+  subscription,
+  alreadySubscribed,
+}: PriceCardProps) {
+  const router = useRouter()
   const { data: userData, isFetching, isError } = useUser()
   const [disabled, setDisabled] = useState(!title || !price_value || !currency)
-
-  const router = useRouter()
-  const isSubscribed = subscription?.price_id === price?.id
 
   const handleSubscribe = async () => {
     setDisabled(true)
@@ -77,17 +83,12 @@ function PriceCard({ title, price_value, currency, price, subscription }: PriceC
             </ul>
           </div>
           <Button
-            disabled={disabled || isFetching || isSubscribed}
+            disabled={disabled || isFetching || alreadySubscribed}
             onClick={handleSubscribe}
             className="bg-[#ffd2d7] font-bold text-black"
           >
-            {isSubscribed ? 'Already subscribed' : 'Subscribe'}
+            {alreadySubscribed ? 'Already subscribed' : 'Subscribe'}
           </Button>
-          {/* <div className="text-wrap text-xs text-[#a7a7a7]">
-            Free for 1 month, then {currency.toUpperCase()}
-            {price} / month after month after. Offer available only to students at an accredited
-            higher education institution and if you have not tried Premium before. Terms apply.
-          </div> */}
         </div>
       </div>
     </div>
