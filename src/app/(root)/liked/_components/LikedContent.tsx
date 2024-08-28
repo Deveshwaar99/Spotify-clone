@@ -3,7 +3,7 @@
 import LikeButton from '@/components/shared/LikeButton'
 import MediaItem from '@/components/shared/MediaItem'
 import useOnPlay from '@/hooks/useOnPlay'
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 
 interface LikedContentProps {
   songs: Song[]
@@ -16,7 +16,7 @@ function LikedContent({ songs }: LikedContentProps) {
   }
   return (
     <div className="flex w-full flex-col gap-y-2 p-6">
-      {songs.map((song: any) => (
+      {songs.map((song: Song) => (
         <div key={song.id} className="flex w-full items-center gap-x-4">
           <div className="flex-1">
             <MediaItem
