@@ -9,9 +9,10 @@ import toast from 'react-hot-toast'
 
 type LikeButtonProps = {
   songId: string
+  defaultState?: boolean
 }
 
-export default function LikeButton({ songId }: LikeButtonProps) {
+export default function LikeButton({ songId, defaultState }: LikeButtonProps) {
   const router = useRouter()
   const supabaseClient = useClient()
   const queryClient = useQueryClient()
@@ -37,6 +38,7 @@ export default function LikeButton({ songId }: LikeButtonProps) {
     queryKey: ['LikedSongs', songId, userData?.user.id],
     queryFn: getSongLikeStatus,
     enabled: !!userData?.user.id,
+    initialData: defaultState,
   })
 
   const handleLikeButtonClick = async () => {
