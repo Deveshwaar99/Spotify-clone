@@ -1,4 +1,4 @@
-import Stripe from 'stripe'
+import type Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe/stripe'
@@ -31,8 +31,9 @@ export async function POST(request: Request) {
   try {
     if (!sig || !webhookSecret) return
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   } catch (err: any) {
-    console.error(`❌ There is an error`, err)
+    console.error('❌ There is an error', err)
     return new NextResponse(`Webhook Error:${err.message}`, { status: 400 })
   }
 
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
         case 'customer.subscription.created':
         case 'customer.subscription.updated':
         case 'customer.subscription.deleted':
+          // biome-ignore lint/correctness/noSwitchDeclarations: <explanation>
           const subscription = event.data.object as Stripe.Subscription
           await manageSubscriptionStatusChange(
             subscription.id,
@@ -58,6 +60,7 @@ export async function POST(request: Request) {
           )
           break
         case 'checkout.session.completed':
+          // biome-ignore lint/correctness/noSwitchDeclarations: <explanation>
           const checkoutSession = event.data.object as Stripe.Checkout.Session
           if (checkoutSession.mode === 'subscription') {
             const subscriptionId = checkoutSession.subscription
