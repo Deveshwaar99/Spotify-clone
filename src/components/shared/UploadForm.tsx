@@ -15,7 +15,7 @@ import { toast, useToast } from '../ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useUploadModal } from '@/hooks/useUploadModal'
 import { useClient } from '@/providers/SupabaseProvider'
 import useUser from '@/hooks/useUser'
@@ -38,9 +38,9 @@ const formSchema = z.object({
 })
 
 export function UploadForm() {
-  const [isLoading, setIsLoading] = useState(false)
   const [selectedSongFile, setSelectedSongFile] = useState<File | undefined | null>(null)
   const [selectedImageFile, setSelectedImageFile] = useState<File | undefined | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const uploadModal = useUploadModal()
   const supabaseClient = useClient()
@@ -61,90 +61,91 @@ export function UploadForm() {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true)
-      if (
-        !values.imageFile ||
-        !values.songFile ||
-        !selectedSongFile ||
-        !selectedImageFile ||
-        !userData
-      ) {
-        toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: 'Missing fields',
-        })
-        return
-      }
-      const uniqueID = uniqid()
-      // Upload song
-      const { data: songData, error: songError } = await supabaseClient.storage
-        .from('songs')
-        .upload(`song-${values.title}-${uniqueID}`, selectedSongFile, {
-          cacheControl: '3600',
-          upsert: false,
-        })
-      if (songError) {
-        setIsLoading(false)
-        return toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: 'Failed song upload',
-        })
-      }
-
-      // Upload image
-      const { data: imageData, error: imageError } = await supabaseClient.storage
-        .from('images')
-        .upload(`image-${values.title}-${uniqueID}`, selectedImageFile, {
-          cacheControl: '3600',
-          upsert: false,
-        })
-
-      if (imageError) {
-        setIsLoading(false)
-        return toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: 'Failed image upload',
-        })
-      }
-
-      // Create record
-      const { error: supabaseError } = await supabaseClient.from('songs').insert({
-        user_id: userData?.user.id,
-        title: values.title,
-        author: values.author,
-        image_path: imageData.path,
-        song_path: songData.path,
-      })
-
-      if (supabaseError) {
-        return toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: supabaseError.message,
-        })
-      }
-      router.refresh()
-      setIsLoading(false)
-      toast({
-        variant: 'default',
-        description: '🎊 Song uploaded',
-      })
-      form.reset()
-      setSelectedSongFile(null)
-      setSelectedImageFile(null)
-      uploadModal.onClose()
-    } catch (error) {
+    if (
+      !values.imageFile ||
+      !values.songFile ||
+      !selectedSongFile ||
+      !selectedImageFile ||
+      !userData
+    ) {
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
+        description: 'Missing fields',
       })
-    } finally {
-      setIsLoading(false)
+      return
     }
+
+    startTransition(async () => {
+      try {
+        const uniqueID = uniqid()
+        // Upload song
+        const { data: songData, error: songError } = await supabaseClient.storage
+          .from('songs')
+          .upload(`song-${values.title}-${uniqueID}`, selectedSongFile, {
+            cacheControl: '3600',
+            upsert: false,
+          })
+        if (songError) {
+          toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'Failed song upload',
+          })
+          return
+        }
+
+        // Upload image
+        const { data: imageData, error: imageError } = await supabaseClient.storage
+          .from('images')
+          .upload(`image-${values.title}-${uniqueID}`, selectedImageFile, {
+            cacheControl: '3600',
+            upsert: false,
+          })
+
+        if (imageError) {
+          toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'Failed image upload',
+          })
+          return
+        }
+
+        // Create record
+        const { error: supabaseError } = await supabaseClient.from('songs').insert({
+          user_id: userData?.user.id,
+          title: values.title,
+          author: values.author,
+          image_path: imageData.path,
+          song_path: songData.path,
+        })
+
+        if (supabaseError) {
+          toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: supabaseError.message,
+          })
+          return
+        }
+        router.refresh()
+        toast({
+          variant: 'default',
+          description: '🎊 Song uploaded',
+        })
+        form.reset()
+        setSelectedSongFile(null)
+        setSelectedImageFile(null)
+        uploadModal.onClose()
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+        })
+      } finally {
+      }
+    })
   }
 
   return (
@@ -157,7 +158,7 @@ export function UploadForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Author" disabled={isLoading} {...field} />
+                  <Input placeholder="Author" disabled={isPending} {...field} />
                 </FormControl>
                 <FormMessage className="m-0 p-0 text-red-600" />
               </FormItem>
@@ -169,7 +170,7 @@ export function UploadForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Title" disabled={isLoading} {...field} />
+                  <Input placeholder="Title" disabled={isPending} {...field} />
                 </FormControl>
                 <FormMessage className="m-0 p-0 text-red-600" />
               </FormItem>
@@ -184,7 +185,7 @@ export function UploadForm() {
                 <FormControl>
                   <Input
                     type="file"
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Song"
                     accept=".mp3"
                     {...field}
@@ -208,7 +209,7 @@ export function UploadForm() {
                 <FormControl>
                   <Input
                     type="file"
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Image"
                     accept="image/*"
                     {...field}
@@ -223,7 +224,7 @@ export function UploadForm() {
             )}
           />
 
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isPending}>
             Submit
           </Button>
         </form>
