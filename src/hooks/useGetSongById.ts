@@ -1,40 +1,30 @@
 import { useClient } from '@/providers/SupabaseProvider'
-import { Song } from '@/types/types'
-import { useEffect, useMemo, useState } from 'react'
+import type { Song } from '@/types/types'
+import { useQuery } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
 function useGetSongById(id?: string) {
-  const [song, setSong] = useState<Song | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(false)
   const supabaseClient = useClient()
 
-  useEffect(() => {
+  const fetchSongById = async () => {
     if (!id) return
 
-    setIsLoading(true)
+    const { data, error } = await supabaseClient.from('songs').select('*').eq('id', id).single()
 
-    async function fetchSongById() {
-      const { data, error } = await supabaseClient.from('songs').select('*').eq('id', id).single()
-
-      if (error) {
-        setIsLoading(false)
-        return toast.error(error.message)
-      }
-
-      setSong(data as Song)
-      setIsLoading(false)
+    if (error) {
+      toast.error(error.message)
+      throw new Error(error.message)
     }
 
-    fetchSongById()
-  }, [id, supabaseClient])
+    return data as Song
+  }
 
-  return useMemo(
-    () => ({
-      song,
-      isLoading,
-    }),
-    [song, isLoading]
-  )
+  const { data: song, isLoading } = useQuery({
+    queryKey: ['song', id],
+    queryFn: fetchSongById,
+    enabled: !!id,
+  })
+  return { song, isLoading }
 }
 
 export default useGetSongById
