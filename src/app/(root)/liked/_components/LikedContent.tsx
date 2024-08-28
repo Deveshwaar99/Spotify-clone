@@ -26,7 +26,7 @@ function LikedContent({ songs }: LikedContentProps) {
               data={song}
             />
           </div>
-          <LikeButton songId={song.id} />
+          <LikeButton songId={song.id} defaultState />
         </div>
       ))}
     </div>
