@@ -45,7 +45,7 @@ export function UploadForm() {
   const uploadModal = useUploadModal()
   const supabaseClient = useClient()
 
-  const { user } = useUser()
+  const { data: userData } = useUser()
 
   const router = useRouter()
 
@@ -68,7 +68,7 @@ export function UploadForm() {
         !values.songFile ||
         !selectedSongFile ||
         !selectedImageFile ||
-        !user
+        !userData
       ) {
         toast({
           variant: 'destructive',
@@ -113,7 +113,7 @@ export function UploadForm() {
 
       // Create record
       const { error: supabaseError } = await supabaseClient.from('songs').insert({
-        user_id: user.id,
+        user_id: userData?.user.id,
         title: values.title,
         author: values.author,
         image_path: imageData.path,
