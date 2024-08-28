@@ -1,6 +1,6 @@
 'use server'
 
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { createClient } from '../supabase/server'
 
 export async function getSongsByUser() {
@@ -9,6 +9,7 @@ export async function getSongsByUser() {
   const userId = userData.data.user?.id
 
   if (!userId) return []
+
   const { data, error } = await supabase
     .from('songs')
     .select('*')
@@ -19,5 +20,5 @@ export async function getSongsByUser() {
     console.error('Error in fetch songs by user Id--', error)
   }
 
-  return (data as Song[]) || []
+  return data ? (data as Song[]) : []
 }
