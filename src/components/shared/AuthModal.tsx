@@ -6,22 +6,22 @@ import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { useAuthModal } from '@/hooks/useAuthModal'
 import Modal from './Modal'
 
-import { useEffect } from 'react'
 import useUser from '@/hooks/useUser'
-import { useRouter } from 'next/navigation'
 import { useClient } from '@/providers/SupabaseProvider'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const AuthModal = () => {
   const { onClose, isOpen } = useAuthModal()
   const router = useRouter()
 
   const supabaseClient = useClient()
-  const { user, isLoading } = useUser()
+  const { data: userData } = useUser()
   useEffect(() => {
-    if (user) {
+    if (userData) {
       onClose()
     }
-  }, [onClose, user])
+  }, [onClose, userData])
 
   const onChange = (open: boolean) => {
     if (!open) {
