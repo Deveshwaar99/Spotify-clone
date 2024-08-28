@@ -1,4 +1,5 @@
 'use server'
+import type { Song } from '@/types/types'
 import { createClient } from '../supabase/server'
 
 export async function getLikedSongs() {
@@ -23,7 +24,7 @@ export async function getLikedSongs() {
       return []
     }
     const songs = data.map(item => item.songs)
-    return (songs as any[]) || []
+    return songs ? (songs as Song[]) : []
   } catch (error: any) {
     console.error('Error in getting liked songs', error?.message)
     return []
