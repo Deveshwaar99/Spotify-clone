@@ -10,12 +10,19 @@ import toast from 'react-hot-toast'
 function AccountContent() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const { data, isFetching, isError } = useUser()
-  console.log('Subscription here ', data)
+  const { data: userData, isLoading, isError } = useUser()
 
-  if (isFetching) return <span className=" ml-6">Fetching subscription details...</span>
-  if (!data || !data.user) return router.replace('/')
-  if (isError) return toast.error('Uh oh! Something went wrong.')
+  useEffect(() => {
+    if (!userData && !isLoading) {
+      router.replace('/')
+    }
+  }, [userData, isLoading, router])
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Uh oh! Something went wrong.')
+    }
+  }, [isError])
 
   const redirectToCustomerPortal = async () => {
     setLoading(true)
@@ -23,17 +30,21 @@ function AccountContent() {
       const { url, error } = await postData({
         url: '/api/create-portal-link',
       })
+      if (error) {
+        throw new Error(error)
+      }
       window.location.assign(url)
     } catch (error) {
-      if (error) return alert((error as Error).message)
+      alert((error as Error).message)
+      setLoading(false) // Set loading to false only if there's an error
     }
-    setLoading(false)
   }
 
-  console.log('Subscription here ', data)
+  if (isLoading) return <span className="ml-6">Fetching subscription details...</span>
+
   return (
     <div className="mb-7 px-6">
-      {!data.subscription && (
+      {!userData?.subscription && (
         <div className="flex flex-col gap-y-4">
           <p>No active plan.</p>
           <Button onClick={() => router.push('/premium')} className="w-[300px]">
@@ -41,18 +52,14 @@ function AccountContent() {
           </Button>
         </div>
       )}
-      {data.subscription && (
+      {userData?.subscription && (
         <div className="flex flex-col gap-y-4">
           <p>
             You are currently on the
-            <b> {data.subscription.prices?.products?.name} </b>
+            <b> {userData.subscription.prices?.products?.name} </b>
             plan.
           </p>
-          <Button
-            disabled={loading || isFetching}
-            onClick={redirectToCustomerPortal}
-            className="w-[300px]"
-          >
+          <Button disabled={loading} onClick={redirectToCustomerPortal} className="w-[300px]">
             Open customer portal
           </Button>
         </div>
