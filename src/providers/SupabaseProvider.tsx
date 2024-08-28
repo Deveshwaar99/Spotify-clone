@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from '@/utils/supabase/client'
-import { SupabaseClient } from '@supabase/auth-helpers-nextjs'
+import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const SupabaseClientContext = createContext<SupabaseClient<any, 'public', any> | undefined>(
@@ -36,7 +36,7 @@ export default SupabaseProvider
 export const useClient = () => {
   const context = useContext(SupabaseClientContext)
   if (context === undefined) {
-    throw new Error(`UserClient must be used within a SupabaseContextProvider.`)
+    throw new Error('UserClient must be used within a SupabaseContextProvider.')
   }
   return context
 }
