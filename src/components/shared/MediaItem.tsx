@@ -1,5 +1,5 @@
 import { useLoadImageUrl } from '@/hooks/useLoadImageUrl'
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import Image from 'next/image'
 
 type MediaItemProps = {
@@ -10,7 +10,8 @@ function MediaItem({ onClick, data }: MediaItemProps) {
   const { imageUrl: imagePath } = useLoadImageUrl(data)
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => {
         onClick(data.id)
       }}
@@ -29,7 +30,7 @@ function MediaItem({ onClick, data }: MediaItemProps) {
         <p className="truncate text-white">{data.title}</p>
         <p className="truncate text-sm text-neutral-400">By {data.author}</p>
       </div>
-    </div>
+    </button>
   )
 }
 
