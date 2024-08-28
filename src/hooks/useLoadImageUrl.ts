@@ -1,4 +1,4 @@
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { getImageUrl } from '@/utils/actions/getImageUrl'
 import { useEffect, useMemo, useState } from 'react'
 
