@@ -1,4 +1,4 @@
-import { ProductWithPrice } from '@/types/types'
+import type { ProductWithPrice } from '@/types/types'
 import { createClient } from '../supabase/server'
 
 const getActiveProductsWithPrices = async (): Promise<ProductWithPrice[]> => {
