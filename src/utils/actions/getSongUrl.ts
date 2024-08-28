@@ -1,6 +1,6 @@
 'use server'
 
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { createClient } from '../supabase/server'
 
 export async function getSongUrl(song: Song) {
