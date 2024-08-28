@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { Home, Search } from 'lucide-react'
 import Box from './Box'
 import Library from './Library'
