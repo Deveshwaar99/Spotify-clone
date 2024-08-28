@@ -15,7 +15,7 @@ type HeaderProps = {
 }
 
 const Header = ({ children, className }: HeaderProps) => {
-  const { user, isLoading } = useUser()
+  const { data: userData, isLoading } = useUser()
 
   const router = useRouter()
 
@@ -76,7 +76,7 @@ const Header = ({ children, className }: HeaderProps) => {
           </button>
         </div>
         <div className="flex items-center gap-x-4 text-black">
-          {user !== null ? (
+          {userData ? (
             <>
               <Button onClick={handleLogout} disabled={isLoading} className="bg-white px-6 py-2">
                 Logout
