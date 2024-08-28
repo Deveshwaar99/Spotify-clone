@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Button from './Button'
 import { Separator } from '@/components/ui/separator'
-import { Price, ProductWithPrice, Subscription } from '@/types/types'
+import { type Price, ProductWithPrice, type Subscription } from '@/types/types'
 import useUser from '@/hooks/useUser'
 import toast from 'react-hot-toast'
 import { postData } from '@/lib/helpers'
@@ -17,7 +17,7 @@ type PriceCardProps = {
   subscription: Subscription | null
 }
 function PriceCard({ title, price_value, currency, price, subscription }: PriceCardProps) {
-  const { user, isLoading } = useUser()
+  const { data: userData, isFetching, isError } = useUser()
   const [disabled, setDisabled] = useState(!title || !price_value || !currency)
 
   const router = useRouter()
@@ -26,7 +26,7 @@ function PriceCard({ title, price_value, currency, price, subscription }: PriceC
   const handleSubscribe = async () => {
     setDisabled(true)
     if (!price) return
-    if (!user) {
+    if (!userData) {
       setDisabled(false)
       return toast.error('Must be logged in')
     }
@@ -37,7 +37,7 @@ function PriceCard({ title, price_value, currency, price, subscription }: PriceC
     try {
       const { sessionId, url } = await postData({
         url: '/api/create-checkout-session',
-        data: { price },
+        data: { priceId: price.id },
       })
       if (!sessionId || !url) {
         setDisabled(false)
@@ -46,10 +46,12 @@ function PriceCard({ title, price_value, currency, price, subscription }: PriceC
 
       router.push(url)
     } catch (error) {
+      toast.error('Somthing went wrong please try again')
       console.error(error)
+      setDisabled(false)
     }
   }
-
+  if (isError) return toast.error('Uh oh! Something went wrong.')
   return (
     <div className="relative m-4 w-[400px] rounded-2xl bg-[#242424] p-6 text-white">
       <div className="flex flex-col items-start">
@@ -75,7 +77,7 @@ function PriceCard({ title, price_value, currency, price, subscription }: PriceC
             </ul>
           </div>
           <Button
-            disabled={disabled || isLoading || isSubscribed}
+            disabled={disabled || isFetching || isSubscribed}
             onClick={handleSubscribe}
             className="bg-[#ffd2d7] font-bold text-black"
           >
