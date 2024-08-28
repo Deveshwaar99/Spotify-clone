@@ -12,5 +12,5 @@ export async function getSongs() {
   if (error) {
     console.error('Error in fetch songs--', error)
   }
-  return (data as Song[]) || []
+  return data ? (data as Song[]) : []
 }
