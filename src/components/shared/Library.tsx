@@ -1,27 +1,28 @@
 'use client'
+import useOnPlay from '@/hooks/useOnPlay'
 import { useUploadModal } from '@/hooks/useUploadModal'
 import useUser from '@/hooks/useUser'
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { Library as LibraryIcon, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import MediaItem from './MediaItem'
-import useOnPlay from '@/hooks/useOnPlay'
 
 type LibraryProps = {
   songs: Song[] | []
 }
 function Library({ songs }: LibraryProps) {
-  const { user, isLoading, subscription } = useUser()
+  const { data: userData, isFetching } = useUser()
 
   const { onPlay } = useOnPlay(songs)
 
   const uploadModal = useUploadModal()
   const router = useRouter()
+
   function onClick() {
-    if (!user && !isLoading) {
+    if (!userData && !isFetching) {
       return router.push('/auth/login')
     }
-    if (!subscription) return router.push('/premium')
+    if (!userData?.subscription) return router.push('/premium')
     uploadModal.onOpen()
   }
   return (
