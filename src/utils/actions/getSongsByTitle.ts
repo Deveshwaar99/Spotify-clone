@@ -1,6 +1,6 @@
 'use server'
 
-import { Song } from '@/types/types'
+import type { Song } from '@/types/types'
 import { createClient } from '../supabase/server'
 import { getSongs } from './getSongs'
 
@@ -22,5 +22,5 @@ export async function getSongsByTitle(title: string) {
     console.error(error.message)
   }
 
-  return (data as Song[]) || []
+  return data ? (data as Song[]) : []
 }
