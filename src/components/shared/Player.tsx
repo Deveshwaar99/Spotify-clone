@@ -10,7 +10,7 @@ import PlayerContent from './PlayerContent'
 function Player() {
   const player = usePlayer()
   const { song, isLoading: isSongLoading } = useGetSongById(player.activeId)
-  const { songUrl, isLoading: isSongUrlLoading } = useLoadSongUrl(song!)
+  const { data: songUrl, isLoading: isSongUrlLoading } = useLoadSongUrl(song)
 
   const isLoading = isSongLoading || isSongUrlLoading
   const shouldRender = useMemo(() => {
