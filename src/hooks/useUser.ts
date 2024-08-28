@@ -1,43 +1,37 @@
 import { useClient } from '@/providers/SupabaseProvider'
-import { useQuery } from '@tanstack/react-query'
-
-import type { UserResponse } from '@supabase/supabase-js'
 import type { Subscription } from '@/types/types'
+import { useQuery } from '@tanstack/react-query'
 
 export default function useUser() {
   const supabase = useClient()
 
-  const getUser = async (): Promise<UserResponse> => await supabase.auth.getUser()
-  const getSubscription = async (userId: string) => {
-    return await supabase
+  const getUserDetails = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser()
+
+    if (userError) {
+      throw userError
+    }
+
+    const { user } = userData
+
+    const { data: subscriptionData, error: subscriptionError } = await supabase
       .from('subscriptions')
       .select('*, prices(*, products(*))')
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .in('status', ['trialing', 'active'])
       .single()
-  }
-  const getUserDetails = async () => {
-    const { data, error } = await getUser()
-    if (error) {
-      return { user: null, subscription: null }
+
+    if (subscriptionError) {
+      console.error('Subscription fetch error:', subscriptionError)
+      return { user, subscription: null }
     }
-    const { user } = data
-    const subscription = await getSubscription(user.id)
-    if (subscription.error || !subscription.data) return { user, subscription: null }
-    console.log('subscription is ', subscription.data)
-    return { user, subscription: subscription.data as Subscription }
+
+    return { user, subscription: subscriptionData as Subscription }
   }
 
-  const { data, error, isFetching, status, isError } = useQuery({
+  return useQuery({
     queryKey: ['userDetails'],
     queryFn: getUserDetails,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   })
-
-  return {
-    data,
-    error,
-    isFetching,
-    status,
-    isError,
-  }
 }
