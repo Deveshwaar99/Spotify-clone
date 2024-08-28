@@ -1,5 +1,4 @@
 import PriceCard from '@/components/shared/PriceCard'
-
 import {
   Carousel,
   CarouselContent,
@@ -15,20 +14,21 @@ async function PremiumPage() {
   const products = await getActiveProductsWithPrices()
   const supabaseClient = createClient()
   const { data, error } = await supabaseClient.auth.getUser()
-  let subscription: Subscription | null = null
-  if (data.user) {
-    const { data: subscriptionData, error: SubscriptionError } = await supabaseClient
-      .from('subscriptions')
-      .select('*, prices(*, products(*))')
-      .eq('user_id', data.user.id)
-      .in('status', ['trialing', 'active'])
-      .single()
-    subscription = subscriptionData
-  }
-  // const handleCheckout = async (price: Price) => {
-  //   'use server'
-  //   if (!data.user) return { message: 'Must be logged in' }
-  // }
+  const subscription = data.user
+    ? await supabaseClient
+        .from('subscriptions')
+        .select('*, prices(*, products(*))')
+        .eq('user_id', data.user.id)
+        .in('status', ['trialing', 'active'])
+        .single()
+        .then(res => {
+          if (res.error) {
+            console.error('Error fetching subscription:', res.error)
+            return null
+          }
+          return res.data as Subscription
+        })
+    : null
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-black">
@@ -44,6 +44,9 @@ async function PremiumPage() {
                     currency={product?.prices?.[0].currency || ''}
                     price={product?.prices?.[0]}
                     subscription={subscription}
+                    alreadySubscribed={
+                      subscription ? subscription.price_id === product.prices?.[0].id : false
+                    }
                   />
                 </CarouselItem>
               )
